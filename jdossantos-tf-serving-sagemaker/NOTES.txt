@@ -1,0 +1,24 @@
+Status: working
+
+Source:
+ 1. How to Create a TensorFlow Serving Container for AWS SageMaker
+   https://medium.com/ml-bytes/how-to-create-a-tensorflow-serving-container-for-aws-sagemaker-4853842c9751
+
+ 2. How to Push a Docker Image to AWS ECS Repository
+    https://medium.com/ml-bytes/how-to-push-a-docker-image-to-aws-ecs-repository-fba579a9f419
+
+ 3. How to Deploy an AWS SageMaker Container Using TensorFlow Serving
+    https://medium.com/ml-bytes/how-to-deploy-an-aws-sagemaker-container-using-tensorflow-serving-4587dad76169
+    
+ 4. How to Make Predictions Against a SageMaker Endpoint Using TensorFlow Serving
+    https://medium.com/ml-bytes/how-to-make-predictions-against-a-sagemaker-endpoint-using-tensorflow-serving-8b423b9b316a
+
+Source code:
+	git clone --single-branch -b r1.9 https://github.com/tensorflow/serving.git /tmp/serving
+
+	cp -r \
+	  /tmp/serving/tensorflow_serving/servables/tensorflow/testdata/saved_model_half_plus_three \
+	  saved_model_half_plus_three
+
+
+

@@ -1,0 +1,13 @@
+status: wip
+
+Issues:
+
+1. 
+denied: User: arn:aws:sts::731833107751:assumed-role/AmazonSageMaker-ExecutionRole-20200129T155117/SageMaker is not authorized to perform: ecr:InitiateLayerUpload on resource: arn:aws:ecr:us-east-1:731833107751:repository/tf-cifar10-restnet
+
+Solution:
+
+   add to ROLE 
+
+     AmazonEC2ContainerRegistryFullAccess 
+
