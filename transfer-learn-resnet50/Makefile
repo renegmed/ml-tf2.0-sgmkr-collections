@@ -1,9 +1,9 @@
 create:
-	virtualenv -p python3 ~/.virtualenvs/transfer-learning/
+	virtualenv -p python3 ~/.virtualenvs/transfer-learn-resnet50/
 .PHONY: create
 
 source:
-	$(source) ~/.virtualenvs/transfer-learning/bin/activate
+	$(source) ~/.virtualenvs/transfer-learn-resnet50/bin/activate
 .PHONY: activate
 
 install:
