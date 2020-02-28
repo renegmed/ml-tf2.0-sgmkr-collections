@@ -19,6 +19,10 @@ local-query:
 	  curl -X POST http://localhost:8080/invocations -d @imagedata1.json
 .PHONY: local-query 
 
+
+local-query2:
+	curl -X POST http://localhost:8080/invocations -d @imagedata11.json
+.PHONY: local-query2
 #local-query:
 #	curl -X POST http://localhost:8080/invocations -d '{"instances": [[  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   2,   0,   0, 144,  21,   0,   1,   0,  0,   0,   0,   0,   0,   0,   0,   0,   0,   0], \
 # [  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   2,   0, 110,  81, 117,   0,   0,   1,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0], \

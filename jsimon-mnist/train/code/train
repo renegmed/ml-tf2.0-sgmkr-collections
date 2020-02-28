@@ -21,10 +21,10 @@ channel_name = 'training'
 training_path = os.path.join(input_path, channel_name)
 
 # default params
-training_script = 'mnist_keras_tf20_eager.py'
+#training_script = 'mnist_keras_tf20_eager.py'
+training_script = 'tf20_fashion_mnist.py'
+
 default_params = ['--model-dir', str(model_path)]
-
-
 
 
 # Execute your training algorithm.
