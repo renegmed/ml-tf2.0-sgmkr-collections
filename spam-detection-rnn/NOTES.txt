@@ -1,0 +1,12 @@
+Status: working
+
+Working from build train to predict.sh but the prediction result is not correct.
+
+
+Training code based on 
+TF2.0 Spam Detection RNN ipynb by Lazy Programmer Team
+Tensorflow 2.0: Deep Learning and Artificial Intelligence
+
+
+
+

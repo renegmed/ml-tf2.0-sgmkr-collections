@@ -1,0 +1,9 @@
+Status: wip
+
+Training code based on 
+TF2.0 Recommender System ipynb by Lazy Programmer Team
+Tensorflow 2.0: Deep Learning and Artificial Intelligence
+
+
+
+
