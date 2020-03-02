@@ -63,7 +63,7 @@ if __name__ == '__main__':
     # custom_movie_map = {} # old movie id > new movie id
     # def map_movie_id(row):
     #   global current_movie_id, custom_movie_map
-   #   old_movie_id = row['movieId']
+    #   old_movie_id = row['movieId']
     #   if old_movie_id not in custom_movie_map:
     #     custom_movie_map[old_movie_id] = current_movie_id
     #     current_movie_id += 1
@@ -154,11 +154,4 @@ if __name__ == '__main__':
     # save Keras model for Tensorflow Serving
     model.save(os.path.join(model_dir, '1'))
 
-   print("Training Completed")
-
-
-
-
-
-
-                                                                                                                                                                                 1,5           Top
+    print("Training Completed")
