@@ -1,0 +1,10 @@
+Status: wip
+
+Based on work of Andrej Baranovskij - Publishing Keras Model API with TensorFlow Serving
+
+Article: https://towardsdatascience.com/publishing-keras-model-api-with-tensorflow-serving-efb5b6d96c36
+
+Source code: https://github.com/abaranovskis-redsamurai/automation-repo/tree/master/tf2.0
+
+
+

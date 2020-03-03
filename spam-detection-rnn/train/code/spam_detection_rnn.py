@@ -28,7 +28,7 @@ if __name__ == '__main__':
     
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('--epochs', type=int, default=10)
+    parser.add_argument('--epochs', type=int, default=100)
 #     parser.add_argument('--learning-rate', type=float, default=0.01)
 #     parser.add_argument('--batch-size', type=int, default=128)
 #     parser.add_argument('--dense-layer', type=int, default=512)
@@ -111,6 +111,8 @@ if __name__ == '__main__':
 
     i = Input(shape=(T,))
     x = Embedding(V + 1, D)(i)
+    x = LSTM(M, return_sequences=True)(x)
+    x = GlobalMaxPooling1D()(x)
     x = LSTM(M, return_sequences=True)(x)
     x = GlobalMaxPooling1D()(x)
     x = Dense(1, activation='sigmoid')(x)

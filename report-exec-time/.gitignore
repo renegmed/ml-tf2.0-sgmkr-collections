@@ -1,5 +1,7 @@
 .ipynb_checkpoints
 deploy/model
+deploy/model_v1
 train/local-test/test_dir/model
 train/local-test/test_dir/input
+
 

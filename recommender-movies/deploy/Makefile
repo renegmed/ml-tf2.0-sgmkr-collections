@@ -4,6 +4,9 @@ copy-model:
 .PHONY: copy-model
 
 build:
+	#docker stop $(docker ps -a -q)
+    #docker rm $(docker ps -a -q)
+	#dsr
 	docker build -t recommender-movies-serving .
 .PHONY: build
 
@@ -16,25 +19,21 @@ local-run:
 
 
 local-query:
-	  curl -X POST http://localhost:8080/invocations -d '{"instances": [["Buy the best shoes in the market for 30.00 US Dollars."]]}'
+	  curl -X POST http://localhost:8080/invocations -d '{"signature_name": "serving_default", "instances": [[99878], [3593]]}'
 .PHONY: local-query 
 
 
-query-spam:
-	curl -X POST http://localhost:8080/invocations -d @spam_0000.json
-.PHONY: query-spam
+
+local-status:
+	  curl -X POST http://localhost:8080/invocations 
+.PHONY: local-status 
 
 
-query-spam-2:
-	curl -X POST http://localhost:8080/invocations -d @spam_1003.json
-.PHONY: query-spam-2
+local-ping:
+	curl -X POST http://localhost:8080/ping
+.PHONY: local-ping
 
-
-query-ham:
-	curl -X POST http://localhost:8080/invocations -d @ham_0002.json
-.PHONY: query-ham
-
-
+  
 tail:
 	docker logs --tail reverent_elbakyan
 .PHONY: tail
