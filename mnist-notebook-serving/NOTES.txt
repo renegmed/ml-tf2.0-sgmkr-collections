@@ -1,0 +1,6 @@
+Status: wip
+
+Source: Lazy Programmer 
+   Udemy Tensorflow 2.0: Deep Learning and AI,
+   TF2.0 Serving.ipynb
+
