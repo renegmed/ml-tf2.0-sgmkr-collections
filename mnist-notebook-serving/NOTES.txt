@@ -4,3 +4,9 @@ Source: Lazy Programmer
    Udemy Tensorflow 2.0: Deep Learning and AI,
    TF2.0 Serving.ipynb
 
+Notes:
+
+   works with > sh predict.sh 
+
+   But not working with > sh predict_2.sh 
+   Having problem with raw image when resized. Need to research more.

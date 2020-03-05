@@ -9,7 +9,7 @@ import tensorflow as tf
 
 from tensorflow import keras
 from tensorflow.keras import layers
-
+ 
 import argparse, os, subprocess, sys
 
 # Script mode doesn't support requirements.txt
@@ -20,7 +20,7 @@ def install(package):
     
 if __name__ == '__main__':
 
-    print("TensorFlow version", tf.__version__)
+    tf.print("TensorFlow version", tf.__version__)
     #print("Keras version", keras.__version__)
 
     # Keras-metrics brings additional metrics: precision, recall, f1
@@ -44,8 +44,8 @@ if __name__ == '__main__':
     model_dir  = args.model_dir
     input_file  = args.input_file
      
-    print("+++++++ model_dir:", model_dir)
-    print("+++++++ input_file:", input_file)
+    tf.print("+++++++ model_dir:", model_dir)
+    tf.print("+++++++ input_file:", input_file)
     
 
     # read training data
@@ -136,15 +136,18 @@ if __name__ == '__main__':
     # The patience parameter is the amount of epochs to check for improvement
     early_stop = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10)
 
+    #hook = smd.KerasHook(out_dir='~/smd_outputs/')
+
+
     history = model.fit(normed_train_data, train_labels, epochs=epochs,
                     validation_split=0.2, batch_size=40, verbose=1, callbacks=[early_stop])
 
     loss, mae, mse = model.evaluate(normed_test_data, test_labels, verbose=0)
 
-    print("Testing set Mean Abs Error: {:5.2f} Report Execution Time".format(mae))
+    tf.print("Testing set Mean Abs Error: {:5.2f} Report Execution Time".format(mae))
 
 
     # save Keras model for Tensorflow Serving
     model.save(os.path.join(model_dir, '1')) 
     
-    print(".... TRAINING COMPLETED ....")
+    tf.print(".... TRAINING COMPLETED ....")
