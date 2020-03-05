@@ -7,4 +7,8 @@ Article: https://towardsdatascience.com/publishing-keras-model-api-with-tensorfl
 Source code: https://github.com/abaranovskis-redsamurai/automation-repo/tree/master/tf2.0
 
 
+This works when model was trained and created using notebook. Result 
+is different when containerized tensor training is used. Don't know why.
+
+
 

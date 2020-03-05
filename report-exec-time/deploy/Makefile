@@ -25,19 +25,14 @@ local-metadata:
 .PHONY: local-metadata
 
 
-query-spam:
-	curl -X POST http://localhost:8080/invocations -d @spam_0000.json
-.PHONY: query-spam
+query:
+	#curl -X POST http://localhost:8080/invocations -d @spam_0000.json
+	curl -d '{"instances": [[ 3.19179609,  2.05277296, -0.51536518, -0.4880486,  -0.50239337, -0.50629114, -0.74968743, -0.68702182,  1.45992522]]}' \
+     		-X POST http://localhost:8080/invocations
+.PHONY: query
 
 
-query-spam-2:
-	curl -X POST http://localhost:8080/invocations -d @spam_1003.json
-.PHONY: query-spam-2
 
-
-query-ham:
-	curl -X POST http://localhost:8080/invocations -d @ham_0002.json
-.PHONY: query-ham
 
 
 tail:
@@ -63,5 +58,42 @@ endpoint-status:
 predict1:
 	sh predict.sh
 .PHONY:predict1
+
+
+
+run:
+	docker run -d --name serving_base tensorflow/serving
+.PHONY: run
+
+copy:
+	#docker cp model_report_exec_time serving_base:/models/report_exec_time
+	docker cp model serving_base:/models/report_exec_time
+.PHONY: copy
+
+commit:
+	docker commit --change "ENV MODEL_NAME report_exec_time" serving_base katanaml/core-serving:v19.8
+.PHONY: commit
+
+serve:
+	docker run -d -p 8500:8500 -p 8501:8501 --name katana-ml-serving katanaml/core-serving:v19.8
+.PHONY: serve
+
+logs:
+	docker logs -f katana-ml-serving
+.PHONY: logs
+
+
+logs:
+	docker logs -f katana-ml-serving
+.PHONY: logs
+
+status:
+	curl http://localhost:8501/v1/models/report_exec_time
+.PHONY: status
+
+post:
+	curl -d '{"instances": [[ 3.19179609,  2.05277296, -0.51536518, -0.4880486,  -0.50239337, -0.50629114, -0.74968743, -0.68702182,  1.45992522]]}' \
+     -X POST http://localhost:8501/v1/models/report_exec_time:predict
+.PHONY: post
 
 

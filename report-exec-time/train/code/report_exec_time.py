@@ -7,10 +7,8 @@ import pandas as pd
 
 import tensorflow as tf
 
-from tensorflow import feature_column
 from tensorflow import keras
 from tensorflow.keras import layers
-from sklearn.model_selection import train_test_split
 
 import argparse, os, subprocess, sys
 
@@ -32,25 +30,15 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--epochs', type=int, default=10)
-#     parser.add_argument('--learning-rate', type=float, default=0.01)
-#     parser.add_argument('--batch-size', type=int, default=128)
-#     parser.add_argument('--dense-layer', type=int, default=512)
-#     parser.add_argument('--dropout', type=float, default=0.2)
 
     parser.add_argument('--gpu-count', type=int, default=os.environ['SM_NUM_GPUS'])
     parser.add_argument('--model-dir', type=str, default=os.environ['SM_MODEL_DIR'])
-#     parser.add_argument('--training', type=str, default=os.environ['SM_CHANNEL_TRAINING'])
-#     parser.add_argument('--validation', type=str, default=os.environ['SM_CHANNEL_VALIDATION'])
     
     parser.add_argument('--input-file', type=str, default=os.environ['SM_INPUT_FILE'])
         
     args, _ = parser.parse_known_args()
     
     epochs     = args.epochs
-#     lr         = args.learning_rate
-#     batch_size = args.batch_size
-#     dense_layer = args.dense_layer
-#     dropout    = args.dropout
     
     gpu_count  = args.gpu_count
     model_dir  = args.model_dir
@@ -72,59 +60,65 @@ if __name__ == '__main__':
 
     #dataframe.head()
 
-    eps=0.001 # 0 => 0.1¢
-    dataframe['report_params'] = np.log(dataframe.pop('report_params')+eps)
+    # report_id and day_part are categorical features. This means we need to encode these two attributes
 
-    # dataframe.head()
+    report_id = dataframe.pop('report_id')
+    day_part = dataframe.pop('day_part')
 
-    dataframe['report_id'] = dataframe['report_id'].apply(str)
-    dataframe['day_part'] = dataframe['day_part'].apply(str)
+    # Encoding categorical attributes (creating as many columns as there are unique values and assigning 1 for the column from current row value)
 
-    # dataframe.head()
+    dataframe['report_1'] = (report_id == 1)*1.0
+    dataframe['report_2'] = (report_id == 2)*1.0
+    dataframe['report_3'] = (report_id == 3)*1.0
+    dataframe['report_4'] = (report_id == 4)*1.0
+    dataframe['report_5'] = (report_id == 5)*1.0
+
+    dataframe['day_morning'] = (day_part == 1)*1.0
+    dataframe['day_midday'] = (day_part == 2)*1.0
+    dataframe['day_afternoon'] = (day_part == 3)*1.0
+
+    #dataframe.head()
+
+    # Splitting training dataset into train (80%) and test data
+
+    train_dataset = dataframe.sample(frac=0.8,random_state=0)
+    test_dataset = dataframe.drop(train_dataset.index)
+
+    # train_dataset.shape
+    # test_dataset.shape
  
-    
-    train, test = train_test_split(dataframe, test_size=0.2)
-    train, val = train_test_split(train, test_size=0.2)
-    print("++++++",len(train), 'train examples')
-    print("++++++",len(val), 'validation examples')
-    print("++++++",len(test), 'test examples')
+    # Describe train dataset, without target feature - exec_time. Mean and std will be used to normalize training data
 
-    # A utility method to create a tf.data dataset from a Pandas Dataframe
-    def df_to_dataset(dataframe, shuffle=True, batch_size=32):
-        dataframe = dataframe.copy()
-        labels = dataframe.pop('exec_time')
-        ds = tf.data.Dataset.from_tensor_slices((dict(dataframe), labels))
-        if shuffle:
-            ds = ds.shuffle(buffer_size=len(dataframe))
-        ds = ds.batch(batch_size)
-        return ds
+    train_stats = train_dataset.describe()
+    train_stats.pop("exec_time")
+    train_stats = train_stats.transpose()
+    # train_stats
 
-    feature_columns = []
+    # Remove exec_time feature from training data and keep it as a target for both training and testing
 
-    feature_columns.append(feature_column.numeric_column('report_params'))
+    train_labels = train_dataset.pop('exec_time')
+    test_labels = test_dataset.pop('exec_time')
 
-    report_id = feature_column.categorical_column_with_vocabulary_list('report_id', ['1', '2', '3', '4', '5'])
-    report_id_one_hot = feature_column.indicator_column(report_id)
-    feature_columns.append(report_id_one_hot)
+    train_labels = np.array(train_labels)
+    test_labels = np.array(test_labels)
 
-    day_part = feature_column.categorical_column_with_vocabulary_list('day_part', ['1', '2', '3'])
-    day_part_one_hot = feature_column.indicator_column(day_part)
-    feature_columns.append(day_part_one_hot)
+    # Neural network learns better, when data is normalized (features look similar to each other)
 
-    feature_layer = tf.keras.layers.DenseFeatures(feature_columns)
+    def norm(x):
+        return (x - train_stats['mean']) / train_stats['std']
 
-    batch_size = 32
-    train_ds = df_to_dataset(train, batch_size=batch_size)
-    val_ds = df_to_dataset(val, shuffle=False, batch_size=batch_size)
-    test_ds = df_to_dataset(test, shuffle=False, batch_size=batch_size)
-    
+    normed_train_data = norm(train_dataset)
+    normed_test_data = norm(test_dataset)
+
+    normed_train_data = np.array(normed_train_data)
+    normed_test_data = np.array(normed_test_data)
+
     # Construct neural network with Keras API on top of TensorFlow. SGD optimizer and 
     # mean squared error loss to check training quality
 
-    def build_model(feature_layer):
+    def build_model():
         model = keras.Sequential([
-            feature_layer,
-            layers.Dense(16, activation='relu'),
+            layers.Dense(16, activation='relu', input_shape=[len(train_dataset.keys())]),
             layers.Dense(16, activation='relu'),
             layers.Dense(1)
         ])
@@ -134,18 +128,21 @@ if __name__ == '__main__':
         model.compile(loss='mse',
                 optimizer=optimizer,
                 metrics=['mae', 'mse'])
-   
         return model
 
-    model = build_model(feature_layer)
-
+    model = build_model()
+    #model.summary()
+    
     # The patience parameter is the amount of epochs to check for improvement
     early_stop = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10)
 
-    history = model.fit(train_ds,
-              validation_data=val_ds,
-              epochs=epochs,
-              callbacks=[early_stop])
+    history = model.fit(normed_train_data, train_labels, epochs=epochs,
+                    validation_split=0.2, batch_size=40, verbose=1, callbacks=[early_stop])
+
+    loss, mae, mse = model.evaluate(normed_test_data, test_labels, verbose=0)
+
+    print("Testing set Mean Abs Error: {:5.2f} Report Execution Time".format(mae))
+
 
     # save Keras model for Tensorflow Serving
     model.save(os.path.join(model_dir, '1')) 
