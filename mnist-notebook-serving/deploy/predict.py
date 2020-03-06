@@ -78,4 +78,4 @@ if __name__ == '__main__':
   actual = [labels[i] for i in y_test[start_index:last_item_index]]
   print("Actual labels: {}".format(actual))
 
-  #print("PREDICTION:", "dress")
+ 

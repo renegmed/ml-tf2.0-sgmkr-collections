@@ -10,6 +10,7 @@ install:
 	pip install tensorflow-gpu==2.0.0 tensorflow-serving-api==2.0.0
 	pip install sagemaker smdebug smdebug-rulesconfig==0.1.2 awscli keras numpy pandas sklearn matplotlib PILLOW --upgrade
 	pip install jupyter
+	pip install opencv-python
 .PHONY: install
 
 exit:
